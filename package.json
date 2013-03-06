@@ -1,0 +1,36 @@
+{
+    "name": "max-docs",
+    "description": "generate HTML docs for Max",
+    "author": "Patrick Mueller",
+    "version": "0.1.0",
+    "tags": [
+        "max"
+    ],
+    "licenses": [
+        {
+            "type": "Tumbolia Public License"
+        }
+    ],
+    "directories": {
+        "lib": "./lib"
+    },
+    "main": "./lib/max-docs_",
+    "bin":          {
+        "max-docs":     "./bin/max-docs.js"
+    },
+    "homepage": "https://github.com/pmuellr/max-docs",
+    "dependencies": {
+        "coffee-script":    "1.6.x",
+        "htmlparser":       "1.7.x",
+        "less":             "1.3.x",
+        "nopt":             "2.1.x",
+        "underscore":       "1.4.x"
+    },
+    "devDependencies": {
+        "wr":               "1.2.x"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git://github.com/pmuellr/dustup.git"
+    }
+}
