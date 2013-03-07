@@ -60,7 +60,8 @@ compileLess = (iFile, oFile) ->
 
     less.render contents, (err, contents) ->
         if err?
-            logger.err "error compiling #{iFile}: #{err}"
+            message = "#{err.line}:#{err.column}: #{err.message}"
+            logger.err "error compiling #{iFile}: #{message}"
 
         fs.writeFileSync oFile, contents
 
@@ -101,6 +102,10 @@ processTut = (baseDir, name, title, opts) ->
     index    = "#{iDir}/#{name}index.maxtut.xml"
     dom      = parseXML index
     sections = dom.getElements dom, "subhead"
+
+    h ""
+    h "<!-- ======================================================================= -->"
+    h "<h1>#{title}</h1>"
 
     for section in sections
         h ""

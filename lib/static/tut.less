@@ -10,13 +10,17 @@ body {
     }
 }
 
+.rounded-corners(@radius: 10px) {
+    -moz-border-radius:     @radius;
+    -webkit-border-radius:  @radius;
+    border-radius:          @radius;
+}
+
 h1, h2, h3 {
     background-color:       #EEF;
     padding:                0.5em 1em;
     border:                 thin solid black;
-    -moz-border-radius:     10px;
-    -webkit-border-radius:  10px;
-    border-radius:          10px;
+    .rounded-corners();
 }
 
 h2 {
