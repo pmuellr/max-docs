@@ -30,6 +30,7 @@ clean:
 
 #-------------------------------------------------------------------------------
 watch:
+	make run
 	node_modules/.bin/wr \
 		"make run" \
 		bin lib Makefile
@@ -53,6 +54,18 @@ vendor-jquery:
 	@curl --progress-bar -o lib/static/jquery.js      $(JQUERY_URL).js
 
 JQUERY_URL = http://code.jquery.com/jquery-1.9.0
+
+#-------------------------------------------------------------------------------
+icons:
+	@echo converting icons
+
+	@convert -resize 057x057 images/icon-512.png images/icon-057.png
+	@convert -resize 072x072 images/icon-512.png images/icon-072.png
+	@convert -resize 114x114 images/icon-512.png images/icon-114.png
+	@convert -resize 144x144 images/icon-512.png images/icon-144.png
+	@convert -resize 032x032 images/icon-512.png images/icon-032.png
+	@convert -resize 064x064 images/icon-512.png images/icon-064.png
+	@convert -resize 128x128 images/icon-512.png images/icon-128.png
 
 #-------------------------------------------------------------------------------
 help:

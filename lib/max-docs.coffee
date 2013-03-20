@@ -78,7 +78,61 @@ processRef = (baseDir, name, title, opts) ->
 
     mkdirp oDir
 
+    if fs.existsSync "#{iDir}/images"
+        copyFiles "#{iDir}/images", "#{oDir}/images"
+
+    html = []; h = (line) -> html.push line
+
+    h "<!doctype html>"
+    h "<meta charset='utf-8'>"
+    h "<head>"
+    h "<title>#{title}</title>"
+    h "<meta name='viewport'                     content='width=device-width, initial-scale=1.0'>"
+    h "<meta name='apple-mobile-web-app-capable' content='yes' />"
+    h "<meta name='format-detection'             content='telephone=no'>"
+    h "<link rel='shortcut icon'                                href='images/icon-032.png' />"
+    h "<link rel='apple-touch-icon-precomposed'                 href='images/icon-057.png' />"
+    h "<link rel='apple-touch-icon-precomposed' sizes='57x57'   href='images/icon-057.png' />"
+    h "<link rel='apple-touch-icon-precomposed' sizes='72x72'   href='images/icon-072.png' />"
+    h "<link rel='apple-touch-icon-precomposed' sizes='114x114' href='images/icon-114.png' />"
+    h "<link rel='apple-touch-icon-precomposed' sizes='144x144' href='images/icon-144.png' />"
+    h "<link href='ref.css' rel='stylesheet'>"
+    h "<script src='jquery.min.js'></script>"
+    h "<script src='ref.js'></script>"
+    h "</head>"
+    h "<body>"
+
+    index    = "#{iDir}/_c74_contents.xml"
+    dom      = parseXML index
+    pages    = dom.getElements dom, "refpage"
+
+    pages = for page in pages
+        page.attribs.name
+
+    h ""
+    h "<!-- ======================================================================= -->"
+    h "<h1>#{title}</h1>"
+
+    for page in pages
+        h ""
+        h "<!-- ======================================================================= -->"
+        h "<h2>Topic: #{page}</h2>"
+
+        h "<div class=indent>"
+
+        domArticle = parseXML "#{iDir}/#{page}"
+        domArticle = massageXML domArticle
+        xml = DOMtoXML domArticle
+
+        h  xml
+        h "</div>"
+
+    oFile = "#{oDir}/index.html"
+    fs.writeFileSync oFile, html.join "\n"
+    logger.log "wrote file ref/#{name}/index.html"
+
     copyStaticFiles "ref", name, opts
+
 
 #-------------------------------------------------------------------------------
 processTut = (baseDir, name, title, opts) ->
@@ -88,17 +142,26 @@ processTut = (baseDir, name, title, opts) ->
     oDir = "#{opts.output}/tut/#{name}"
 
     mkdirp oDir
-
-    if fs.existsSync "#{iDir}/images"
-        copyFiles "#{iDir}/images", "#{oDir}/images"
-
+    
+    copyFiles "#{iDir}/images",                     "#{oDir}/images" if fs.existsSync "#{iDir}/images"
     copyFiles "#{__dirname}/../images/tut/#{name}", "#{oDir}/images"
+    copyFiles "#{__dirname}/../images",             "#{oDir}/images"
 
     html = []; h = (line) -> html.push line
 
     h "<!doctype html>"
+    h "<meta charset='utf-8'>"
     h "<head>"
     h "<title>#{title}</title>"
+    h "<meta name='viewport'                     content='width=device-width, initial-scale=1.0'>"
+    h "<meta name='apple-mobile-web-app-capable' content='yes' />"
+    h "<meta name='format-detection'             content='telephone=no'>"
+    h "<link rel='shortcut icon'                                href='images/icon-032.png' />"
+    h "<link rel='apple-touch-icon-precomposed'                 href='images/icon-057.png' />"
+    h "<link rel='apple-touch-icon-precomposed' sizes='57x57'   href='images/icon-057.png' />"
+    h "<link rel='apple-touch-icon-precomposed' sizes='72x72'   href='images/icon-072.png' />"
+    h "<link rel='apple-touch-icon-precomposed' sizes='114x114' href='images/icon-114.png' />"
+    h "<link rel='apple-touch-icon-precomposed' sizes='144x144' href='images/icon-144.png' />"
     h "<link href='tut.css' rel='stylesheet'>"
     h "<script src='jquery.min.js'></script>"
     h "<script src='tut.js'></script>"
@@ -227,6 +290,10 @@ massageNodes = (nodes) ->
 
     for node in nodes
         continue if node.type == "directive"
+        continue if node.type == "comment"
+
+        if node.type is "text"
+            continue if node.data.indexOf("TEXT_HERE") isnt -1
 
         if node.type is "tag"
             if node.name is "body"
@@ -234,8 +301,11 @@ massageNodes = (nodes) ->
                 node.raw  = "bodydiv"
 
             if node.name is "example"
-                node.name = "img"
-                node.raw  = "img src='#{node.attribs.name}'"
+                if node.attribs
+                    node.name = "img"
+                    name      = node.attribs.name            if node.attribs.name 
+                    name      = "images/#{node.attribs.img}" if node.attribs.img
+                    node.raw  = "img src='#{name}'"
 
             if node.name is "subhead"
                 node.name = "h3"
