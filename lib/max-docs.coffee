@@ -313,7 +313,7 @@ massageNodes = (nodes) ->
 
             if node.name is "openfile"
                 node.name = "img"
-                node.raw  = "img src='images/#{node.attribs.name}.png'"
+                node.raw  = "img class='patch' src='images/#{node.attribs.name}.png'"
 
             if node.name is "seealsolist"
                 node.name = "ul"
