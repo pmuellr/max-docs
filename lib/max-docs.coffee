@@ -40,6 +40,10 @@ maxDocs.start = (baseDir, opts) ->
     processTut baseDir, "max", "Max tutorial: Max",    opts
     processTut baseDir, "msp", "Max tutorial: MSP",    opts
 
+    processVig baseDir, "jit", "Max tutorial: Jitter", opts
+    processVig baseDir, "max", "Max tutorial: Max",    opts
+    processVig baseDir, "msp", "Max tutorial: MSP",    opts
+
 #-------------------------------------------------------------------------------
 copyStaticFiles = (type, name, opts) ->
     copyFile "#{__dirname}/static/jquery.js",     "#{opts.output}/#{type}/#{name}/jquery.js"
@@ -87,6 +91,8 @@ processTut = (baseDir, name, title, opts) ->
 
     if fs.existsSync "#{iDir}/images"
         copyFiles "#{iDir}/images", "#{oDir}/images"
+
+    copyFiles "#{__dirname}/../images/tut/#{name}", "#{oDir}/images"
 
     html = []; h = (line) -> html.push line
 
@@ -145,6 +151,8 @@ processTut = (baseDir, name, title, opts) ->
 
     copyStaticFiles "tut", name, opts
 
+#-------------------------------------------------------------------------------
+processVig = (baseDir, name, title, opts) ->
 
 #-------------------------------------------------------------------------------
 parseXML = (file) ->
@@ -232,6 +240,18 @@ massageNodes = (nodes) ->
             if node.name is "subhead"
                 node.name = "h3"
                 node.raw  = "h3"
+
+            if node.name is "openfile"
+                node.name = "img"
+                node.raw  = "img src='images/#{node.attribs.name}.png'"
+
+            if node.name is "seealsolist"
+                node.name = "ul"
+                node.raw  = "ul class='seealso'"
+
+            if node.name is "seealso"
+                node.name = "li"
+                node.raw  = "li name='#{node.attribs.name}'"
 
         node.children = massageNodes node.children
 

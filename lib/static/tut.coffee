@@ -8,7 +8,20 @@ $(document).ready ->
 
 #-------------------------------------------------------------------------------
 process = ->
+    uls$ = $ "ul.seealso"
+    for ul in uls$
+        ul$ = $ ul
+        ul$.before "<h3>See also</h3>"
 
+
+    lis$ = $ "ul.seealso li"
+
+    for li in lis$
+        li$ = $ li
+
+        text = li$.text()
+        name = li$.attr "name"
+        li$.html "<b>#{name}</b>: #{text}"
 
 #-------------------------------------------------------------------------------
 # Copyright (c) 2013 Patrick Mueller

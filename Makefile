@@ -32,7 +32,7 @@ clean:
 watch:
 	node_modules/.bin/wr \
 		"make run" \
-		bin lib bin Makefile
+		bin lib Makefile
 
 #-------------------------------------------------------------------------------
 run: 
